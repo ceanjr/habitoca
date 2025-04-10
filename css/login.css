@@ -1,0 +1,67 @@
+.auth-container {
+  width: 300px;
+  margin: 100px auto;
+}
+
+.auth-container input {
+  padding: 8px 10px;
+  border-radius: 4px;
+  outline: none;
+  border: 2px solid var(--card-color);
+  background-color: var(--input-color);
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+#login-container,
+#register-container {
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+}
+
+#login-container h2,
+#register-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#login-form,
+#register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#login-form button,
+#register-form button {
+  align-self: center;
+  width: 70%;
+  padding: 6px 12px;
+  border-radius: 4px;
+  outline: none;
+  border: none;
+  background-color: var(--button-color);
+  margin-top: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: background-color 0.3s;
+}
+
+#login-form button:hover,
+#register-form button:hover {
+  background-color: #b3a496;
+}
+
+#show-register,
+#show-login {
+  text-align: center;
+  margin-top: 20px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  align-self: center;
+}

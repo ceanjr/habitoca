@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const registerMessage = document.getElementById('register-message');
   const loginMessage = document.getElementById('login-message');
   const logoutButton = document.getElementById('logout-button');
+  const loginContainer = document.getElementById('login-container');
+  const registerContainer = document.getElementById('register-container');
+  const showRegisterButton = document.getElementById('show-register');
+  const showLoginButton = document.getElementById('show-login');
 
   const config = {
     rows: 7,
@@ -19,51 +23,66 @@ document.addEventListener('DOMContentLoaded', () => {
   let authToken = localStorage.getItem('authToken');
 
   async function registerUser(name, email, password) {
-    // Agora recebe 'name' e 'email'
     try {
       const response = await fetch(`${serverURL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }), // Envia 'name' e 'email'
+        body: JSON.stringify({ name, email, password }),
       });
       const data = await response.json();
       if (response.ok) {
-        registerMessage.textContent = data.message;
-        // Opcional: fazer login automático aqui
+        if (registerMessage) {
+          // Verifique se registerMessage existe
+          registerMessage.textContent = data.message;
+        }
       } else {
-        registerMessage.textContent = data.error || 'Erro ao registrar.';
+        if (registerMessage) {
+          // Verifique se registerMessage existe
+          registerMessage.textContent = data.error || 'Erro ao registrar.';
+        }
       }
     } catch (error) {
       console.error('Erro ao registrar:', error);
-      registerMessage.textContent = 'Erro de conexão com o servidor.';
+      if (registerMessage) {
+        // Verifique se registerMessage existe
+        registerMessage.textContent = 'Erro de conexão com o servidor.';
+      }
     }
   }
 
-  // Função para fazer login
   async function loginUser(email, password) {
-    // Agora recebe 'email'
     try {
       const response = await fetch(`${serverURL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }), // Envia 'email'
+        body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
       if (response.ok) {
         authToken = data.token;
         localStorage.setItem('authToken', authToken);
-        localStorage.setItem('userName', data.name); // Armazena o nome
+        localStorage.setItem('userName', data.name);
         authContainer.style.display = 'none';
         appContainer.style.display = 'block';
-        loginMessage.textContent = '';
+        if (loginMessage) {
+          // Verificação adicional
+          loginMessage.textContent = '';
+        }
         displayUserName();
-        loadHabits();
+        await loadHabits();
       } else {
-        loginMessage.textContent = data.error || 'Erro ao fazer login.';
+        console.log(loginMessage); // verificação
+        if (loginMessage) {
+          // Verificação adicional
+          loginMessage.textContent = data.error || 'Erro ao fazer login.';
+        }
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
-      loginMessage.textContent = 'Erro de conexão com o servidor.';
+      if (loginMessage) {
+        // Verificação adicional
+        loginMessage.textContent = 'Erro de conexão com o servidor.';
+      }
     }
   }
 
@@ -270,6 +289,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     habitsContainer.appendChild(habit);
   }
+
+  showRegisterButton.addEventListener('click', () => {
+    loginContainer.style.display = 'none';
+    registerContainer.style.display = 'block';
+  });
+
+  showLoginButton.addEventListener('click', () => {
+    registerContainer.style.display = 'none';
+    loginContainer.style.display = 'block';
+  });
 
   async function handleProgressChange(
     grid,

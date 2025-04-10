@@ -20,46 +20,47 @@
     <button id="theme-toggle">Alternar Modo</button>
 
     <div class="auth-container">
-      <h2>Registro</h2>
-      <form id="register-form">
-        <input type="text" id="register-name" placeholder="Seu Nome" required />
-        <!- Campo Nome Adicionado -->
-        <input
-          type="email"
-          id="register-email"
-          placeholder="Seu Email"
-          required
-        />
-        <!- Campo Email Adicionado -->
-        <input
-          type="password"
-          id="register-password"
-          placeholder="Senha"
-          required
-        />
-        <button type="submit">Registrar</button>
-        <p id="register-message"></p>
-      </form>
+      <div id="login-container">
+        <h2>Login</h2>
+        <form id="login-form">
+          <input type="email" id="login-email" placeholder="Email" required />
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Senha"
+            required
+          />
+          <button type="submit">Entrar</button>
+          <span id="show-register">Registrar</span>
+        </form>
+      </div>
 
-      <h2>Login</h2>
-      <form id="login-form">
-        <input type="email" id="login-email" placeholder="Seu Email" required />
-        <!- Campo Email Adicionado -->
-        <input
-          type="password"
-          id="login-password"
-          placeholder="Senha"
-          required
-        />
-        <button type="submit">Login</button>
-        <p id="login-message"></p>
-      </form>
+      <div id="register-container" style="display: none">
+        <h2>Registrar</h2>
+        <form id="register-form">
+          <input type="text" id="register-name" placeholder="Nome" required />
+          <input
+            type="email"
+            id="register-email"
+            placeholder="Email"
+            required
+          />
+          <input
+            type="password"
+            id="register-password"
+            placeholder="Senha"
+            required
+          />
+          <button type="submit">Registrar</button>
+          <span id="show-login">Login</span>
+        </form>
+      </div>
     </div>
 
     <div class="container" style="display: none">
       <h1 id="greeting"></h1>
-      <h1>Habitoca</h1>
-      <button id="logout-button">Logout</button>
+      <h1 id="title">Habitoca</h1>
+      <span id="logout-button">Logout</span>
       <form id="habit-form">
         <input
           type="text"
