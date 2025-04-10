@@ -14,25 +14,25 @@ const JWT_SECRET = 'seu_segredo_super_secreto'; // Mantenha isso em um ambiente 
 
 // Rota de registro
 app.post('/register', async (req, res) => {
-  const { username, password } = req.body;
+  const { name, email, password } = req.body;
 
-  if (!username || !password) {
+  if (!name || !email || !password) {
     return res
       .status(400)
-      .json({ error: 'Nome de usuário e senha são obrigatórios.' });
+      .json({ error: 'Nome, email e senha são obrigatórios.' });
   }
 
   try {
-    const existingUser = await db.getUserByUsername(username);
+    const existingUser = await db.getUserByEmail(email);
     if (existingUser) {
-      return res.status(409).json({ error: 'Nome de usuário já existe.' });
+      return res.status(409).json({ error: 'Email já existe.' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await db.createUser(username, hashedPassword);
+    const newUser = await db.createUser(name, email, hashedPassword);
     const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, {
       expiresIn: '1h',
-    }); // Cria um token
+    });
 
     res.status(201).json({ message: 'Usuário registrado com sucesso!', token });
   } catch (error) {
@@ -43,16 +43,14 @@ app.post('/register', async (req, res) => {
 
 // Rota de login
 app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ error: 'Nome de usuário e senha são obrigatórios.' });
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
   }
 
   try {
-    const user = await db.getUserByUsername(username);
+    const user = await db.getUserByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Credenciais inválidas.' });
     }
@@ -64,9 +62,13 @@ app.post('/login', async (req, res) => {
 
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: '1h',
-    }); // Cria um token
+    });
 
-    res.json({ message: 'Login realizado com sucesso!', token });
+    res.json({
+      message: 'Login realizado com sucesso!',
+      token,
+      name: user.name,
+    });
   } catch (error) {
     console.error('Erro ao fazer login:', error);
     res.status(500).json({ error: 'Erro ao realizar o login.' });

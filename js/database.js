@@ -18,7 +18,8 @@ function createUsersTable() {
     `
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL
     )
   `,
@@ -30,6 +31,8 @@ function createUsersTable() {
       }
     }
   );
+
+  db.run(`CREATE INDEX IF NOT EXISTS idx_users_email ON users (email)`);
 }
 
 function createHabitsTable() {
@@ -124,11 +127,11 @@ function deleteHabit(id) {
   });
 }
 
-function getUserByUsername(username) {
+function getUserByEmail(email) {
   return new Promise((resolve, reject) => {
-    db.get(`SELECT * FROM users WHERE username = ?`, [username], (err, row) => {
+    db.get(`SELECT * FROM users WHERE email = ?`, [email], (err, row) => {
       if (err) {
-        console.error('Erro ao buscar usuário:', err.message);
+        console.error('Erro ao buscar usuário por email:', err.message);
         reject(err);
       } else {
         resolve(row);
@@ -137,17 +140,17 @@ function getUserByUsername(username) {
   });
 }
 
-function createUser(username, password) {
+function createUser(name, email, password) {
   return new Promise((resolve, reject) => {
     db.run(
-      `INSERT INTO users (username, password) VALUES (?, ?)`,
-      [username, password],
+      `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`,
+      [name, email, password],
       function (err) {
         if (err) {
           console.error('Erro ao criar usuário:', err.message);
           reject(err);
         } else {
-          resolve({ id: this.lastID, username });
+          resolve({ id: this.lastID, name, email });
         }
       }
     );
@@ -159,7 +162,7 @@ module.exports = {
   addHabit,
   updateHabitProgress,
   deleteHabit,
-  getUserByUsername,
+  getUserByEmail, // Renomeado e agora busca por email
   createUser,
-  db, // Exportar a conexão com o banco de dados para fechamento
+  db,
 };

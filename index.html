@@ -22,12 +22,15 @@
     <div class="auth-container">
       <h2>Registro</h2>
       <form id="register-form">
+        <input type="text" id="register-name" placeholder="Seu Nome" required />
+        <!- Campo Nome Adicionado -->
         <input
-          type="text"
-          id="register-username"
-          placeholder="Nome de usuário"
+          type="email"
+          id="register-email"
+          placeholder="Seu Email"
           required
         />
+        <!- Campo Email Adicionado -->
         <input
           type="password"
           id="register-password"
@@ -40,12 +43,8 @@
 
       <h2>Login</h2>
       <form id="login-form">
-        <input
-          type="text"
-          id="login-username"
-          placeholder="Nome de usuário"
-          required
-        />
+        <input type="email" id="login-email" placeholder="Seu Email" required />
+        <!- Campo Email Adicionado -->
         <input
           type="password"
           id="login-password"
@@ -58,9 +57,9 @@
     </div>
 
     <div class="container" style="display: none">
-      <h1>Rastreador de Hábitos</h1>
+      <h1 id="greeting"></h1>
+      <h1>Habitoca</h1>
       <button id="logout-button">Logout</button>
-      <!- Botão de Logout Adicionado -->
       <form id="habit-form">
         <input
           type="text"

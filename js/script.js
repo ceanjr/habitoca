@@ -18,17 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const serverURL = 'http://localhost:4000'; // Atualiza a porta para 4000
   let authToken = localStorage.getItem('authToken');
 
-  async function registerUser(username, password) {
+  async function registerUser(name, email, password) {
+    // Agora recebe 'name' e 'email'
     try {
       const response = await fetch(`${serverURL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ name, email, password }), // Envia 'name' e 'email'
       });
       const data = await response.json();
       if (response.ok) {
         registerMessage.textContent = data.message;
-        // Podemos fazer o login automaticamente após o registro bem-sucedido, se desejarmos
+        // Opcional: fazer login automático aqui
       } else {
         registerMessage.textContent = data.error || 'Erro ao registrar.';
       }
@@ -39,27 +40,42 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Função para fazer login
-  async function loginUser(username, password) {
+  async function loginUser(email, password) {
+    // Agora recebe 'email'
     try {
       const response = await fetch(`${serverURL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }), // Envia 'email'
       });
       const data = await response.json();
       if (response.ok) {
         authToken = data.token;
         localStorage.setItem('authToken', authToken);
+        localStorage.setItem('userName', data.name); // Armazena o nome
         authContainer.style.display = 'none';
         appContainer.style.display = 'block';
         loginMessage.textContent = '';
-        loadHabits(); // Carrega os hábitos após o login
+        displayUserName();
+        loadHabits();
       } else {
         loginMessage.textContent = data.error || 'Erro ao fazer login.';
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
       loginMessage.textContent = 'Erro de conexão com o servidor.';
+    }
+  }
+
+  function displayUserName() {
+    const userName = localStorage.getItem('userName');
+    if (userName) {
+      const greetingElement = document.getElementById('greeting'); // Crie um elemento com esse ID no seu HTML
+      if (greetingElement) {
+        greetingElement.textContent = `Olá, ${userName}!`;
+      } else {
+        console.warn('Elemento com ID "greeting" não encontrado no HTML.');
+      }
     }
   }
 
@@ -280,16 +296,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   registerForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const username = document.getElementById('register-username').value;
+    const name = document.getElementById('register-name').value; // Obtém o nome
+    const email = document.getElementById('register-email').value; // Obtém o email
     const password = document.getElementById('register-password').value;
-    registerUser(username, password);
+    registerUser(name, email, password); // Chama registerUser com nome e email
   });
 
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const username = document.getElementById('login-username').value;
+    const email = document.getElementById('login-email').value; // Obtém o email
     const password = document.getElementById('login-password').value;
-    loginUser(username, password);
+    loginUser(email, password); // Chama loginUser com email
   });
 
   function logout() {
@@ -319,6 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (authToken) {
     authContainer.style.display = 'none';
     appContainer.style.display = 'block';
+    displayUserName();
     loadHabits();
   } else {
     authContainer.style.display = 'block';
