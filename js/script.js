@@ -173,6 +173,22 @@ document.addEventListener('DOMContentLoaded', () => {
         habit.progress
       )
     );
+
+    habits.forEach((habit) => {
+      // Verifica se os botões devem ser desabilitados no carregamento inicial
+      if (
+        dailyActions[habit.id] &&
+        isSameDay(new Date(dailyActions[habit.id]))
+      ) {
+        const habitElement = document.querySelector(
+          `.habit[data-habit-id="${habit.id}"]`
+        );
+        if (habitElement) {
+          habitElement.querySelector('.add-progress').disabled = true;
+          habitElement.querySelector('.remove-progress').disabled = true;
+        }
+      }
+    });
   }
 
   function highlightSequences(grid, progress) {
@@ -225,6 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
     habitsContainer.removeChild(habitElement);
   }
 
+  let dailyActions = JSON.parse(localStorage.getItem('dailyActions')) || {};
+
   function addHabitToUI(name, rows, cols, id, progress) {
     const habit = document.createElement('div');
     habit.draggable = true;
@@ -239,8 +257,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="notification" style="display: none;">Todos os quadrados já foram preenchidos!</p>
       <div class="habit-grid"></div>
       <div class="habit-buttons">
-        <button type="button" class="add-progress">Sim</button>
-        <button type="button" class="remove-progress">Não</button>
+        <div>
+          <button type="button" class="add-progress">Sim</button>
+          <button type="button" class="remove-progress">Não</button>
+        </div>
+        <span class="checked-span">Check!</span>
       </div>
     `;
 
@@ -249,6 +270,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const addProgressButton = habit.querySelector('.add-progress');
     const removeProgressButton = habit.querySelector('.remove-progress');
     const removeHabitButton = habit.querySelector('.remove-habit');
+    const checkedSpan = habit.querySelector('.checked-span');
+
+    checkedSpan.style.display = 'none';
 
     const progressArray = progress || Array(rows * cols).fill(0);
 
@@ -264,12 +288,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     highlightSequences(grid, progressArray);
 
+    // Verifica se os botões devem ser desabilitados
+    if (dailyActions[id] && isSameDay(new Date(dailyActions[id]))) {
+      addProgressButton.disabled = true;
+      removeProgressButton.disabled = true;
+      checkedSpan.style.display = 'inline'; // Mostra o "Check!"
+    }
+
     addProgressButton.addEventListener('click', () => {
       handleProgressChange(grid, 1, notification, id);
+      disableButtons(id);
+      checkedSpan.style.display = 'inline'; // Mostra o "Check!"
     });
 
     removeProgressButton.addEventListener('click', () => {
       handleProgressChange(grid, -1, notification, id);
+      disableButtons(id);
+      checkedSpan.style.display = 'inline'; // Mostra o "Check!"
     });
 
     let confirmDelete = false;
@@ -328,10 +363,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
       highlightSequences(grid, updatedProgress);
 
+      // Atualiza a data da última ação
+      dailyActions[habitId] = new Date().toISOString(); // Armazena como string ISO
+      localStorage.setItem('dailyActions', JSON.stringify(dailyActions));
+
       const allFilled = updatedProgress.every((value) => value !== 0);
       notification.style.display = allFilled ? 'block' : 'none';
     }
   }
+
+  function disableButtons(habitId) {
+    const habitElement = document.querySelector(
+      `.habit[data-habit-id="${habitId}"]`
+    );
+    if (habitElement) {
+      habitElement.querySelector('.add-progress').disabled = true;
+      habitElement.querySelector('.remove-progress').disabled = true;
+    }
+  }
+
+  function enableButtons(habitId) {
+    const habitElement = document.querySelector(
+      `.habit[data-habit-id="${habitId}"]`
+    );
+    if (habitElement) {
+      habitElement.querySelector('.add-progress').disabled = false;
+      habitElement.querySelector('.remove-progress').disabled = false;
+      habitElement.querySelector('.checked-span').style.display = 'none'; // Esconde o "Check!"
+    }
+  }
+
+  function isSameDay(date) {
+    const today = new Date();
+
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  }
+
+  function checkDailyActions() {
+    dailyActions = JSON.parse(localStorage.getItem('dailyActions')) || {}; // Recarrega do localStorage
+    Object.keys(dailyActions).forEach((habitId) => {
+      if (!isSameDay(new Date(dailyActions[habitId]))) {
+        enableButtons(habitId);
+      }
+    });
+  }
+
+  // Verifica as ações diárias a cada minuto
+  setInterval(checkDailyActions, 60000);
 
   habitForm.addEventListener('submit', async (e) => {
     e.preventDefault();

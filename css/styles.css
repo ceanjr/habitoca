@@ -160,7 +160,22 @@ h1 {
 .habit-buttons {
   margin-top: 24px;
   display: flex;
+  justify-content: space-between;
+}
+
+.habit-buttons div {
+  display: flex;
   gap: 16px;
+}
+
+.habit-buttons div button {
+  padding-inline: 14px;
+}
+
+.checked-span {
+  font-family: 'Roboto Mono', monospace;
+  letter-spacing: 1px;
+  font-weight: 600;
 }
 
 .habit-grid {
