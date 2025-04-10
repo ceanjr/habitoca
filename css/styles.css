@@ -1,10 +1,32 @@
+:root {
+  --bg-color: #ffffff;
+  --card-color: #f7f7f7;
+  --text-color: #000000;
+  --grid-bg: #f7f7f7;
+  --day-color: #e6e6e6;
+  --day-level-1: #4caf50; /* Verde */
+  --day-negative: #f44336; /* Vermelho */
+}
+
 body {
-  font-family: 'Roboti', sans-serif;
+  font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f9f9f9;
   color: #333;
   line-height: 1.6;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+body.dark-mode {
+  --bg-color: #121212;
+  --card-color: #1b1b1b;
+  --text-color: #ffffff;
+  --grid-bg: #1b1b1b;
+  --day-color: #333333;
+  --day-level-1: #81c784; /* Verde claro */
+  --day-negative: #e57373; /* Vermelho claro */
 }
 
 .container {
@@ -19,7 +41,7 @@ h1 {
   font-weight: 700;
   font-size: 28px;
   margin-bottom: 20px;
-  color: #111;
+  color: var(--text-color);
 }
 
 #habit-form {
@@ -90,8 +112,8 @@ h1 {
 }
 
 .habit {
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: var(--card-color);
+  border: 1px solid var(--bg-color);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -99,15 +121,20 @@ h1 {
 }
 
 .habit:hover {
-  transform: translateY(-1px);
+  /* transform: translateY(-1px); */
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-.habit h2 {
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h2 {
   font-size: 20px;
   font-weight: 600;
-  margin: 0 0 15px;
-  color: #222;
+  color: var(--text-color);
   /*   display: flex;
   justify-content: space-between;
   align-items: center; */
@@ -123,6 +150,7 @@ h1 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(12px, 1fr));
   gap: 4px;
+  background-color: var(--grid-bg);
 }
 
 .day {
@@ -131,14 +159,15 @@ h1 {
   background-color: #f5f5f5;
   border-radius: 4px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  background-color: var(--day-color);
 }
 
 .day.level-1 {
-  background-color: #4caf50; /* Verde suave */
+  background-color: var(--day-level-1);
 }
 
 .day.level-negative {
-  background-color: #ff6b6b; /* Vermelho suave */
+  background-color: var(--day-negative);
 }
 
 .notification {
@@ -150,9 +179,9 @@ h1 {
 }
 
 button.add-progress {
-  background-color: #4caf50; /* Verde */
-  color: white;
-  border: none;
+  background-color: var(--card-color); /* Verde */
+  border: 2px solid var(--day-level-1);
+  color: var(--day-level-1);
   font-size: 14px;
   cursor: pointer;
   padding: 5px 10px;
@@ -161,13 +190,14 @@ button.add-progress {
 }
 
 button.add-progress:hover {
-  background-color: #388e3c; /* Verde mais escuro */
+  background-color: var(--day-level-1);
+  color: var(--text-color);
 }
 
 button.remove-progress {
-  background-color: #ff6b6b; /* Vermelho */
-  color: white;
-  border: none;
+  background-color: var(--card-color); /* Verde */
+  border: 2px solid var(--day-negative);
+  color: var(--day-negative);
   font-size: 14px;
   cursor: pointer;
   padding: 5px 10px;
@@ -176,22 +206,25 @@ button.remove-progress {
 }
 
 button.remove-progress:hover {
-  background-color: #e53935; /* Vermelho mais escuro */
+  background-color: var(--day-negative);
+  color: var(--text-color);
 }
 
-button.remove-habit {
-  background-color: #d32f2f; /* Vermelho forte */
-  color: white;
-  border: none;
-  font-size: 12px;
+.remove-habit {
   cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-button.remove-habit:hover {
-  background-color: #b71c1c; /* Vermelho ainda mais escuro */
+/* .remove-habit:hover {
+  width: 26px;
+  opacity: 0.8;
+} */
+
+.second-click-remove-habit,
+.second-click-remove-habit:hover {
+  border: 2px solid red;
+  border-radius: 50%;
+  padding: 6px;
 }
 
 @media (max-width: 800px) {
@@ -206,4 +239,20 @@ button.remove-habit:hover {
   #habit-form button {
     width: 100%;
   }
+}
+
+#theme-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--day-color);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+#theme-toggle:hover {
+  opacity: 0.8;
 }
