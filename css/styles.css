@@ -256,3 +256,32 @@ button.remove-progress:hover {
 #theme-toggle:hover {
   opacity: 0.8;
 }
+
+.day.sequence-1 {
+  /* Estilo para sequências de 1 dia (pode ser igual ao level-1 ou um pouco diferente) */
+}
+
+.day.sequence-2 {
+  background-color: #6ee7b7; /* Verde um pouco mais escuro */
+}
+
+.day.sequence-3 {
+  background-color: #34d399; /* Verde mais escuro */
+}
+
+.day.sequence-4,
+.day.sequence-5 {
+  background-color: #10b981;
+}
+
+.day.sequence-6,
+.day.sequence-7 {
+  background-color: #059669;
+}
+
+/* Você pode continuar com mais níveis de sequência se desejar */
+.day.sequence-8,
+.day.sequence-9,
+.day.sequence-10 {
+  background-color: #047857;
+}

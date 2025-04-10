@@ -156,6 +156,34 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
+  function highlightSequences(grid, progress) {
+    const days = Array.from(grid.querySelectorAll('.day'));
+    let longestSequence = 0;
+    let currentSequenceLength = 0;
+
+    // Limpa todas as classes de sequência existentes
+    days.forEach((day) => {
+      for (let i = 1; i <= progress.length; i++) {
+        day.classList.remove(`sequence-${i}`);
+      }
+    });
+
+    // Recalcula e adiciona as classes de sequência apenas onde necessário
+    days.forEach((day, index) => {
+      const progressValue = parseInt(day.dataset.progress);
+
+      if (progressValue === 1) {
+        currentSequenceLength++;
+        day.classList.add(`sequence-${currentSequenceLength}`);
+        longestSequence = Math.max(longestSequence, currentSequenceLength);
+      } else {
+        currentSequenceLength = 0;
+      }
+    });
+
+    // Opcional: Você pode usar 'longestSequence' para algo no futuro, como destacar a maior sequência.
+  }
+
   async function handleAddHabit(habitName) {
     const newHabit = {
       name: habitName,
@@ -192,8 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="notification" style="display: none;">Todos os quadrados já foram preenchidos!</p>
       <div class="habit-grid"></div>
       <div class="habit-buttons">
-        <button class="add-progress">Sim</button>
-        <button class="remove-progress">Não</button>
+        <button type="button" class="add-progress">Sim</button>
+        <button type="button" class="remove-progress">Não</button>
       </div>
     `;
 
@@ -214,6 +242,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (value === -1) day.classList.add('level-negative');
       grid.appendChild(day);
     });
+
+    highlightSequences(grid, progressArray);
 
     addProgressButton.addEventListener('click', () => {
       handleProgressChange(grid, 1, notification, id);
@@ -266,6 +296,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const updatedProgress = days.map((day) => parseInt(day.dataset.progress));
       await updateHabitProgressOnServer(habitId, updatedProgress);
+
+      highlightSequences(grid, updatedProgress);
 
       const allFilled = updatedProgress.every((value) => value !== 0);
       notification.style.display = allFilled ? 'block' : 'none';
