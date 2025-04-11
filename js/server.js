@@ -1,4 +1,3 @@
-// app.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
@@ -8,13 +7,13 @@ const db = require('./database'); // Importa as funções do banco de dados
 
 const app = express();
 app.use(bodyParser.json());
-// app.use(cors());
-app.use(
-  cors({
-    origin: 'https://habitoca.vercel.app',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  })
-);
+app.use(cors());
+// app.use(
+//   cors({
+//     origin: 'https://habitoca.vercel.app',
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+//   })
+// );
 
 const JWT_SECRET = 'han-sola'; // Mantenha isso em um ambiente de variáveis
 
@@ -210,7 +209,7 @@ app.delete('/habits/:id', authenticateToken, async (req, res) => {
 });
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
 
