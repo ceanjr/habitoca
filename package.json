@@ -1,7 +1,13 @@
 {
+  "name": "Habitoca",
+  "version": "1.0.0",
+  "main": "./js/app.js",
+  "engines": {
+    "node": "22"
+  },
   "scripts": {
-    "start": "node index.js",
-    "server": "nodemon index.js"
+    "start": "node ./js/app.js",
+    "server": "nodemon ./js/app.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
