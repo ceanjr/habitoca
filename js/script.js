@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cols: 30,
   };
 
-  const serverURL = 'https://habitoca.vercel.app';
+  const serverURL = 'https://kaleidoscopic-horse-7b4ff9.netlify.app';
   let authToken = localStorage.getItem('authToken');
 
   async function registerUser(name, email, password) {
