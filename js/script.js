@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cols: 30,
   };
 
-  const serverURL = 'https://habitoca.vercel.app/api';
+  const serverURL = 'https://habitoca.vercel.app';
   let authToken = localStorage.getItem('authToken');
 
   async function registerUser(name, email, password) {
