@@ -196,8 +196,8 @@ app.delete('/habits/:id', authenticateToken, async (req, res) => {
   }
 });
 
-const PORT = 4000;
-const server = app.listen(PORT, () => {
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
 
