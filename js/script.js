@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cols: 30,
   };
 
-  const serverURL = 'http://kaleidoscopic-horse-7b4ff9.netlify.app'; // Atualiza a porta para 4000
+  const serverURL = 'https://kaleidoscopic-horse-7b4ff9.netlify.app'; // Atualiza a porta para 4000
   let authToken = localStorage.getItem('authToken');
 
   async function registerUser(name, email, password) {
