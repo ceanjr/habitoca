@@ -141,6 +141,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  async function updateHabitOnServer(habitId, updates) {
+    try {
+      await authenticatedFetch(`${serverURL}/habits/${habitId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(updates),
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar hábito no servidor:', error);
+    }
+  }
+
   async function updateHabitProgressOnServer(habitId, progressArray) {
     try {
       await authenticatedFetch(`${serverURL}/habits/${habitId}`, {
@@ -189,6 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
+
+    // Sincroniza os streaks com o banco de dados
+    await syncStreaksWithDatabase();
   }
 
   function highlightSequences(grid, progress) {
@@ -226,6 +240,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const savedHabit = await saveHabitToServer(newHabit);
     if (savedHabit && savedHabit.id) {
+      // Inicializa os streaks no localStorage
+      const streaks = getStreaksFromLocalStorage();
+      streaks[savedHabit.id] = { streak: 0, maxStreak: 0 };
+      saveStreaksToLocalStorage(streaks);
+
       addHabitToUI(
         savedHabit.name,
         config.rows,
@@ -249,6 +268,9 @@ document.addEventListener('DOMContentLoaded', () => {
     habit.classList.add('habit');
     habit.dataset.habitId = id;
 
+    const streaks = getStreaksFromLocalStorage();
+    const streakData = streaks[id] || { streak: 0, maxStreak: 0 };
+
     habit.innerHTML = `
       <div class="card-header">
         <h2>${name}</h2>
@@ -262,6 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <button type="button" class="remove-progress">Não</button>
         </div>
         <span class="checked-span">Check!</span>
+        <div>
+          <span class="current-streak"></span>
+          <span class="max-streak"></span>
+        </div>
       </div>
     `;
 
@@ -271,6 +297,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const removeProgressButton = habit.querySelector('.remove-progress');
     const removeHabitButton = habit.querySelector('.remove-habit');
     const checkedSpan = habit.querySelector('.checked-span');
+
+    const currentStreakDisplay = habit.querySelector('.current-streak');
+    const maxStreakDisplay = habit.querySelector('.max-streak');
+
+    currentStreakDisplay.textContent = streakData.streak;
+    maxStreakDisplay.textContent = streakData.maxStreak;
 
     checkedSpan.style.display = 'none';
 
@@ -369,6 +401,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const allFilled = updatedProgress.every((value) => value !== 0);
       notification.style.display = allFilled ? 'block' : 'none';
+
+      const habitElement = document.querySelector(
+        `.habit[data-habit-id="${habitId}"]`
+      );
+      if (habitElement) {
+        const currentStreakDisplay =
+          habitElement.querySelector('.current-streak');
+        const maxStreakDisplay = habitElement.querySelector('.max-streak');
+        let currentStreak = parseInt(currentStreakDisplay.textContent);
+        let currentMaxStreak = parseInt(maxStreakDisplay.textContent);
+
+        if (progressType === 1) {
+          currentStreak++;
+          currentMaxStreak = Math.max(currentMaxStreak, currentStreak);
+        } else if (progressType === -1) {
+          currentStreak = 0;
+        }
+
+        currentStreakDisplay.textContent = currentStreak;
+        maxStreakDisplay.textContent = currentMaxStreak;
+
+        // Atualiza os streaks no localStorage
+        const streaks = getStreaksFromLocalStorage();
+        streaks[habitId] = {
+          streak: currentStreak,
+          maxStreak: currentMaxStreak,
+        };
+        saveStreaksToLocalStorage(streaks);
+
+        // Atualiza os streaks no backend
+        await updateHabitOnServer(habitId, {
+          streak: currentStreak,
+          maxStreak: currentMaxStreak,
+        });
+      }
     }
   }
 
@@ -496,4 +563,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // }
     input.type = input.type == 'text' ? 'password' : 'text';
   });
+
+  function getStreaksFromLocalStorage() {
+    const streaks = localStorage.getItem('habitStreaks');
+    return streaks ? JSON.parse(streaks) : {};
+  }
+
+  function saveStreaksToLocalStorage(streaks) {
+    localStorage.setItem('habitStreaks', JSON.stringify(streaks));
+  }
+
+  async function syncStreaksWithDatabase() {
+    const streaks = getStreaksFromLocalStorage();
+    for (const habitId in streaks) {
+      const { streak, maxStreak } = streaks[habitId];
+      await updateHabitOnServer(habitId, { streak, maxStreak });
+    }
+  }
 });

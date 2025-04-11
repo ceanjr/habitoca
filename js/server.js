@@ -168,6 +168,18 @@ app.put('/habits/:id', authenticateToken, async (req, res) => {
   }
 });
 
+app.patch('/habits/:id', async (req, res) => {
+  const { streak, maxStreak } = req.body;
+  const { id } = req.params;
+
+  try {
+    await db.updateHabitStreak(id, streak, maxStreak);
+    res.json({ message: 'Streak atualizado com sucesso!' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Rota para remover um hábito
 app.delete('/habits/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;

@@ -157,6 +157,21 @@ function createUser(name, email, password) {
   });
 }
 
+async function updateHabitStreak(habitId, streak, maxStreak) {
+  try {
+    const query = `
+          UPDATE habits
+          SET streak = ?, maxStreak = ?
+          WHERE id = ?
+      `;
+    await db.run(query, [streak, maxStreak, habitId]);
+    return { success: true };
+  } catch (error) {
+    console.error('Erro ao atualizar streak:', error);
+    return { success: false, error: error.message };
+  }
+}
+
 module.exports = {
   getHabits,
   addHabit,
@@ -164,5 +179,6 @@ module.exports = {
   deleteHabit,
   getUserByEmail, // Renomeado e agora busca por email
   createUser,
+  updateHabitStreak,
   db,
 };
