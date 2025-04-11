@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cols: 30,
   };
 
-  const serverURL = 'http://127.0.0.1:4000';
+  const serverURL = 'http://localhost:4000';
   let authToken = localStorage.getItem('authToken');
 
   async function registerUser(name, email, password) {
