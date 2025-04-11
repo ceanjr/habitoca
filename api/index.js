@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const db = require('./database'); // Importa as funções do banco de dados
+const db = require('../js/database'); // Importa as funções do banco de dados
 
 const app = express();
 app.use(bodyParser.json());
@@ -196,10 +196,14 @@ app.delete('/habits/:id', authenticateToken, async (req, res) => {
   }
 });
 
-const PORT = 4000;
-const server = app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+// const PORT = 4000;
+// const server = app.listen(PORT, () => {
+//   console.log(`Servidor rodando na porta ${PORT}`);
+// });
+
+module.exports = (req, res) => {
+  app(req, res); // A Vercel lida com o servidor para você
+};
 
 // Certifique-se de fechar a conexão com o banco de dados ao encerrar o servidor
 process.on('SIGINT', () => {
