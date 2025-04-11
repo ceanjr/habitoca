@@ -24,12 +24,16 @@
         <h2>Login</h2>
         <form id="login-form">
           <input type="email" id="login-email" placeholder="Email" required />
-          <input
-            type="password"
-            id="login-password"
-            placeholder="Senha"
-            required
-          />
+          <div class="password-field">
+            <input
+              type="password"
+              class="password"
+              id="login-password"
+              placeholder="Senha"
+              required
+            />
+            <img src="./assets/eye.svg" alt="icone de olho" id="eye" />
+          </div>
           <button type="submit">Entrar</button>
           <span id="show-register">Registrar</span>
         </form>
@@ -45,12 +49,16 @@
             placeholder="Email"
             required
           />
-          <input
-            type="password"
-            id="register-password"
-            placeholder="Senha"
-            required
-          />
+          <div class="password-field">
+            <input
+              type="password"
+              class="password"
+              id="register-password"
+              placeholder="Senha"
+              required
+            />
+            <img src="./assets/eye.svg" alt="icone de olho" id="eye" />
+          </div>
           <button type="submit">Registrar</button>
           <span id="show-login">Login</span>
         </form>

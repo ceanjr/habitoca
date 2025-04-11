@@ -65,3 +65,20 @@
   text-underline-offset: 2px;
   align-self: center;
 }
+
+.password-field {
+  position: relative;
+}
+
+.password {
+  width: 100%;
+}
+
+#eye {
+  width: 24px;
+  position: absolute;
+  right: 10px;
+  bottom: 17%;
+  opacity: 30%;
+  cursor: pointer;
+}

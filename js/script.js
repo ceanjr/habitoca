@@ -485,4 +485,15 @@ document.addEventListener('DOMContentLoaded', () => {
     authContainer.style.display = 'block';
     appContainer.style.display = 'none';
   }
+
+  let input = document.querySelector('.password');
+  let img = document.querySelector('#eye');
+  img.addEventListener('click', function () {
+    // if (input.type == 'text') {
+    //   input.type = 'password';
+    // } else {
+    //   input.type = 'text';
+    // }
+    input.type = input.type == 'text' ? 'password' : 'text';
+  });
 });
