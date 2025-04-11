@@ -10,7 +10,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-const JWT_SECRET = 'seu_segredo_super_secreto'; // Mantenha isso em um ambiente de variáveis
+const JWT_SECRET = 'han-sola'; // Mantenha isso em um ambiente de variáveis
 
 // Rota de registro
 app.post('/register', async (req, res) => {
