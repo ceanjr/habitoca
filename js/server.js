@@ -8,7 +8,14 @@ const db = require('./database'); // Importa as funções do banco de dados
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+// app.use(cors());
+app.use(
+  cors({
+    origin: '*', // Ou especificar o domínio permitido
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 
 const JWT_SECRET = 'han-sola'; // Mantenha isso em um ambiente de variáveis
 
