@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cols: 30,
   };
 
-  const serverURL = 'http://localhost:3000';
+  const serverURL = 'https://habitoca.onrender.com';
   let authToken = localStorage.getItem('authToken');
 
   async function registerUser(name, email, password) {
