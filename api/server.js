@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const db = require('./database'); // Importa as funções do banco de dados
+const db = require('../js/database'); // Importa as funções do banco de dados
 
 const app = express();
 app.use(bodyParser.json());
