@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cols: 30,
   };
 
-  const serverURL = 'https://habitoca.vercel.app';
+  const serverURL = 'http://localhost:4000';
   let authToken = localStorage.getItem('authToken');
 
   async function registerUser(name, email, password) {
