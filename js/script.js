@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cols: 30,
   };
 
-  const serverURL = 'http://localhost:4000';
+  const serverURL = 'https://habitoca.vercel.app';
   let authToken = localStorage.getItem('authToken');
 
   async function registerUser(name, email, password) {
@@ -255,6 +255,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  let checkedButtonIds =
+    JSON.parse(localStorage.getItem('checkedButtonIds')) || {};
+
+  function updateCheckedButtonIds(habitId, addButtonId, removeButtonId) {
+    checkedButtonIds[habitId] = { addButtonId, removeButtonId };
+    localStorage.setItem('checkedButtonIds', JSON.stringify(checkedButtonIds));
+  }
+
   async function removeHabit(habitElement, habitId) {
     await deleteHabitFromServer(habitId);
     habitsContainer.removeChild(habitElement);
@@ -275,17 +283,20 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="card-header">
         <h2>${name}</h2>
         <img class="remove-habit" src="./assets/lixeira.svg" alt="icone de lixeira">
-      </div>
-      <p class="notification" style="display: none;">Todos os quadrados já foram preenchidos!</p>
-      <div class="habit-grid"></div>
-      <div class="habit-buttons">
+        </div>
+        <p class="notification" style="display: none;">Todos os quadrados já foram preenchidos!</p>
+        <div class="habit-grid"></div>
+        <div class="habit-buttons">
         <div>
-          <button type="button" class="add-progress">Sim</button>
-          <button type="button" class="remove-progress">Não</button>
+        <button type="button" class="add-progress">Sim</button>
+        <button type="button" class="remove-progress">Não</button>
         </div>
         <span class="checked-span">Check!</span>
-        <div>
+        <div class="streaks">
+          <img class="fire-streak" src="./assets/fire.svg" alt="icone de fogo">
           <span class="current-streak"></span>
+          <span>|</span>
+          <span>Max:</span>
           <span class="max-streak"></span>
         </div>
       </div>
@@ -327,18 +338,34 @@ document.addEventListener('DOMContentLoaded', () => {
       checkedSpan.style.display = 'inline'; // Mostra o "Check!"
     }
 
+    // Verifica se os botões devem ser desabilitados
+    if (checkedButtonIds[id]) {
+      // Verifica o estado do localStorage
+      if (checkedButtonIds[id].addButtonId) {
+        addProgressButton.id = checkedButtonIds[id].addButtonId;
+      }
+      if (checkedButtonIds[id].removeButtonId) {
+        removeProgressButton.id = checkedButtonIds[id].removeButtonId;
+      }
+    }
+
     addProgressButton.addEventListener('click', () => {
       handleProgressChange(grid, 1, notification, id);
       disableButtons(id);
-      checkedSpan.style.display = 'inline'; // Mostra o "Check!"
+      checkedSpan.style.display = 'inline';
+      checkedSpan.classList.add('span-green');
+      addProgressButton.id = 'checked-add';
+      updateCheckedButtonIds(id, 'checked-add', null); // Atualiza o ID do botão "Sim"
     });
 
     removeProgressButton.addEventListener('click', () => {
       handleProgressChange(grid, -1, notification, id);
       disableButtons(id);
-      checkedSpan.style.display = 'inline'; // Mostra o "Check!"
+      checkedSpan.style.display = 'inline';
+      checkedSpan.classList.add('span-red');
+      removeProgressButton.id = 'checked-remove';
+      updateCheckedButtonIds(id, null, 'checked-remove'); // Atualiza o ID do botão "Não"
     });
-
     let confirmDelete = false;
 
     removeHabitButton.addEventListener('click', () => {
@@ -353,6 +380,8 @@ document.addEventListener('DOMContentLoaded', () => {
         removeHabit(habit, id);
       }
     });
+
+    setInterval(checkDailyActions, 60000);
 
     habitsContainer.appendChild(habit);
   }
@@ -471,16 +500,41 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function checkDailyActions() {
-    dailyActions = JSON.parse(localStorage.getItem('dailyActions')) || {}; // Recarrega do localStorage
+    dailyActions = JSON.parse(localStorage.getItem('dailyActions')) || {};
+    checkedButtonIds =
+      JSON.parse(localStorage.getItem('checkedButtonIds')) || {}; // Carrega checkedButtonIds
+
     Object.keys(dailyActions).forEach((habitId) => {
       if (!isSameDay(new Date(dailyActions[habitId]))) {
         enableButtons(habitId);
+        delete checkedButtonIds[habitId]; // Remove os IDs "checkados"
       }
     });
+
+    localStorage.setItem('checkedButtonIds', JSON.stringify(checkedButtonIds)); // Salva checkedButtonIds atualizado
   }
+
+  checkDailyActions(); // Adicione esta linha
 
   // Verifica as ações diárias a cada minuto
   setInterval(checkDailyActions, 60000);
+
+  // function simulateNextDay() {
+  //   const dailyActions = JSON.parse(localStorage.getItem('dailyActions')) || {};
+
+  //   Object.keys(dailyActions).forEach((habitId) => {
+  //     const currentDate = new Date();
+  //     const previousDay = new Date(currentDate);
+  //     previousDay.setDate(currentDate.getDate() - 1); // Subtrai um dia
+
+  //     dailyActions[habitId] = previousDay.toISOString(); // Atualiza a data no localStorage
+  //   });
+
+  //   localStorage.setItem('dailyActions', JSON.stringify(dailyActions));
+  // }
+
+  // const simulateNextDayButton = document.getElementById('simulate-next-day');
+  // simulateNextDayButton.addEventListener('click', simulateNextDay);
 
   habitForm.addEventListener('submit', async (e) => {
     e.preventDefault();

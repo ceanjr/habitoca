@@ -15,7 +15,7 @@
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Mono', sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f9f9f9;
@@ -163,7 +163,7 @@ h1 {
   justify-content: space-between;
 }
 
-.habit-buttons div {
+.habit-buttons div:nth-child(1) {
   display: flex;
   gap: 16px;
 }
@@ -172,10 +172,28 @@ h1 {
   padding-inline: 14px;
 }
 
+#checked-add {
+  background-color: var(--day-level-1);
+  color: var(--bg-color);
+}
+
+#checked-remove {
+  background-color: var(--day-negative);
+  color: var(--bg-color);
+}
+
 .checked-span {
   font-family: 'Roboto Mono', monospace;
   letter-spacing: 1px;
   font-weight: 600;
+}
+
+.span-green {
+  color: var(--day-level-1);
+}
+
+.span-red {
+  color: var(--day-negative);
 }
 
 .habit-grid {
@@ -247,6 +265,17 @@ button.remove-progress:hover {
 .remove-habit {
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
+}
+
+.streaks {
+  position: relative;
+  font-family: 'Roboto Mono', monospace;
+  letter-spacing: 1px;
+}
+
+.fire-streak {
+  position: absolute;
+  left: -30px;
 }
 
 #logout-button {

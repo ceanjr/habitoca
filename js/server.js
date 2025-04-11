@@ -11,9 +11,8 @@ app.use(bodyParser.json());
 // app.use(cors());
 app.use(
   cors({
-    origin: '*', // Ou especificar o domínio permitido
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: 'https://habitoca.vercel.app',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   })
 );
 
@@ -169,6 +168,8 @@ app.put('/habits/:id', authenticateToken, async (req, res) => {
 });
 
 app.patch('/habits/:id', async (req, res) => {
+  console.log(req.body);
+  console.log('TESTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE');
   const { streak, maxStreak } = req.body;
   const { id } = req.params;
 

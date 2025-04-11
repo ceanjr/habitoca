@@ -157,19 +157,28 @@ function createUser(name, email, password) {
   });
 }
 
-async function updateHabitStreak(habitId, streak, maxStreak) {
-  try {
-    const query = `
-          UPDATE habits
-          SET streak = ?, maxStreak = ?
-          WHERE id = ?
-      `;
-    await db.run(query, [streak, maxStreak, habitId]);
-    return { success: true };
-  } catch (error) {
-    console.error('Erro ao atualizar streak:', error);
-    return { success: false, error: error.message };
-  }
+function updateHabitStreak(id, streak, maxStreak) {
+  return new Promise((resolve, reject) => {
+    let query = `UPDATE habits SET streak = ?`;
+    let params = [streak];
+
+    if (maxStreak !== undefined) {
+      query += `, maxStreak = ?`;
+      params.push(maxStreak);
+    }
+
+    query += ` WHERE id = ?`;
+    params.push(id);
+
+    db.run(query, params, function (err) {
+      if (err) {
+        console.error('Erro ao atualizar streak do hábito:', err.message);
+        reject(err);
+      } else {
+        resolve({ changes: this.changes });
+      }
+    });
+  });
 }
 
 module.exports = {
